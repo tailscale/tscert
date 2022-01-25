@@ -4,7 +4,7 @@ This is a stripped down version of the
 `tailscale.com/client/tailscale` Go package but with minimal
 dependencies and supporting older versions of Go.
 
-It's meant for us by Caddy, so they don't need to depend on Go 1.17 yet.
+It's meant for use by Caddy, so they don't need to depend on Go 1.17 yet.
 Also, it has the nice side efffect of not polluting their `go.sum` file
 because `tailscale.com` is a somewhat large module.
 
