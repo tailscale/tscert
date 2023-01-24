@@ -21,7 +21,7 @@ var AppSharedDir atomic.Value
 // or the empty string if there's no reasonable default.
 func DefaultTailscaledSocket() string {
 	if runtime.GOOS == "windows" {
-		return ""
+		return `\\.\pipe\ProtectedPrefix\Administrators\Tailscale\tailscaled`
 	}
 	if runtime.GOOS == "darwin" {
 		return "/var/run/tailscaled.socket"
