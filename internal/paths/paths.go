@@ -41,8 +41,8 @@ var stateFileFunc func() string
 // tailscaled state file, or the empty string if there's no reasonable
 // default value.
 func DefaultTailscaledStateFile() string {
-	if state := os.Getenv("TS_STATE_DIR"); state != "" {
-		return state
+	if statedir := os.Getenv("TS_STATE_DIR"); statedir != "" {
+		return filepath.Join(statedir, "tailscaled.state")
 	}
 	if f := stateFileFunc; f != nil {
 		return f()
