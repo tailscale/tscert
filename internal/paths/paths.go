@@ -20,6 +20,9 @@ var AppSharedDir atomic.Value
 // DefaultTailscaledSocket returns the path to the tailscaled Unix socket
 // or the empty string if there's no reasonable default.
 func DefaultTailscaledSocket() string {
+	if socket := os.Getenv("TS_SOCKET"); socket != "" {
+		return socket
+	}
 	if runtime.GOOS == "windows" {
 		return `\\.\pipe\ProtectedPrefix\Administrators\Tailscale\tailscaled`
 	}
@@ -38,6 +41,9 @@ var stateFileFunc func() string
 // tailscaled state file, or the empty string if there's no reasonable
 // default value.
 func DefaultTailscaledStateFile() string {
+	if statedir := os.Getenv("TS_STATE_DIR"); statedir != "" {
+		return filepath.Join(statedir, "tailscaled.state")
+	}
 	if f := stateFileFunc; f != nil {
 		return f()
 	}
