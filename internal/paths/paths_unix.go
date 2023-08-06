@@ -23,6 +23,10 @@ func init() {
 func statePath() string {
 	switch runtime.GOOS {
 	case "linux":
+		if fi, err := os.Stat("/gokrazy"); err == nil && fi.IsDir() {
+			return "/perm/tailscaled/tailscaled.state"
+		}
+
 		return "/var/lib/tailscale/tailscaled.state"
 	case "freebsd", "openbsd":
 		return "/var/db/tailscale/tailscaled.state"
