@@ -29,6 +29,9 @@ func DefaultTailscaledSocket() string {
 	if runtime.GOOS == "darwin" {
 		return "/var/run/tailscaled.socket"
 	}
+	if fi, err := os.Stat("/gokrazy"); err == nil && fi.IsDir() {
+		return "/perm/tailscaled/tailscaled.sock"
+	}
 	if fi, err := os.Stat("/var/run"); err == nil && fi.IsDir() {
 		return "/var/run/tailscale/tailscaled.sock"
 	}
