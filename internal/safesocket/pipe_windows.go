@@ -9,7 +9,7 @@ import (
 	"net"
 	"syscall"
 
-	"github.com/Microsoft/go-winio"
+	"github.com/microsoft/go-winio"
 )
 
 func connect(s *ConnectionStrategy) (net.Conn, error) {
