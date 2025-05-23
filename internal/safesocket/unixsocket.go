@@ -45,7 +45,7 @@ func connect(s *ConnectionStrategy) (net.Conn, error) {
 }
 
 // TODO(apenwarr): handle magic cookie auth
-func listen(path string, port uint16) (ln net.Listener, _ uint16, err error) {
+func listen(path string) (ln net.Listener, err error) {
 	// Unix sockets hang around in the filesystem even after nobody
 	// is listening on them. (Which is really unfortunate but long-
 	// entrenched semantics.) Try connecting first; if it works, then
@@ -60,9 +60,9 @@ func listen(path string, port uint16) (ln net.Listener, _ uint16, err error) {
 	if err == nil {
 		c.Close()
 		if tailscaledRunningUnderLaunchd() {
-			return nil, 0, fmt.Errorf("%v: address already in use; tailscaled already running under launchd (to stop, run: $ sudo launchctl stop com.tailscale.tailscaled)", path)
+			return nil, fmt.Errorf("%v: address already in use; tailscaled already running under launchd (to stop, run: $ sudo launchctl stop com.tailscale.tailscaled)", path)
 		}
-		return nil, 0, fmt.Errorf("%v: address already in use", path)
+		return nil, fmt.Errorf("%v: address already in use", path)
 	}
 	_ = os.Remove(path)
 
@@ -88,10 +88,10 @@ func listen(path string, port uint16) (ln net.Listener, _ uint16, err error) {
 	}
 	pipe, err := net.Listen("unix", path)
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
 	os.Chmod(path, perm)
-	return pipe, 0, err
+	return pipe, err
 }
 
 func tailscaledRunningUnderLaunchd() bool {
@@ -119,10 +119,10 @@ func socketPermissionsForOS() os.FileMode {
 // little dance to connect a regular user binary to the sandboxed
 // network extension is:
 //
-//   * the sandboxed IPNExtension picks a random localhost:0 TCP port
+//   - the sandboxed IPNExtension picks a random localhost:0 TCP port
 //     to listen on
-//   * it also picks a random hex string that acts as an auth token
-//   * it then creates a file named "sameuserproof-$PORT-$TOKEN" and leaves
+//   - it also picks a random hex string that acts as an auth token
+//   - it then creates a file named "sameuserproof-$PORT-$TOKEN" and leaves
 //     that file descriptor open forever.
 //
 // Then, we do different things depending on whether the user is
@@ -134,15 +134,15 @@ func socketPermissionsForOS() os.FileMode {
 //
 // If we're outside the App Sandbox:
 //
-//   * then we come along here, running as the same UID, but outside
+//   - then we come along here, running as the same UID, but outside
 //     of the sandbox, and look for it. We can run lsof on our own processes,
 //     but other users on the system can't.
-//   * we parse out the localhost port number and the auth token
-//   * we connect to TCP localhost:$PORT
-//   * we send $TOKEN + "\n"
-//   * server verifies $TOKEN, sends "#IPN\n" if okay.
-//   * server is now protocol switched
-//   * we return the net.Conn and the caller speaks the normal protocol
+//   - we parse out the localhost port number and the auth token
+//   - we connect to TCP localhost:$PORT
+//   - we send $TOKEN + "\n"
+//   - server verifies $TOKEN, sends "#IPN\n" if okay.
+//   - server is now protocol switched
+//   - we return the net.Conn and the caller speaks the normal protocol
 //
 // If we're inside the App Sandbox, then TS_MACOS_CLI_SHARED_DIR has
 // been set to our shared directory. We now have to find the most
