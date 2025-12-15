@@ -1,9 +1,9 @@
 module github.com/tailscale/tscert
 
-go 1.15
+go 1.25.5
 
 require (
-	github.com/Microsoft/go-winio v0.6.0
 	github.com/mitchellh/go-ps v1.0.0
-	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f
+	github.com/tailscale/go-winio v0.0.0-20231025203758-c4f33415bf55
+	golang.org/x/sys v0.10.0
 )
