@@ -1,6 +1,6 @@
 module github.com/tailscale/tscert
 
-go 1.25.5
+go 1.25
 
 require (
 	github.com/mitchellh/go-ps v1.0.0
