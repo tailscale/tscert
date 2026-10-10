@@ -161,6 +161,10 @@ func send(ctx context.Context, method, path string, wantStatus int, body io.Read
 		return nil, err
 	}
 	if res.StatusCode != wantStatus {
+		err := errors.New(res.Status)
+		if msg := strings.TrimSpace(string(slurp)); msg != "" {
+			err = fmt.Errorf("%s: %s", res.Status, msg)
+		}
 		return nil, bestError(err, slurp)
 	}
 	return slurp, nil
